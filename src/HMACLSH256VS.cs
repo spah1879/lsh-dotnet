@@ -1,0 +1,37 @@
+using System.Text;
+using Kr.Re.Nsr.Crypto;
+
+class HMACLSH256VS
+{
+  private static readonly byte[][] key = {
+    Encoding.ASCII.GetBytes("key"),
+    new byte[1024]
+  };
+
+  private static readonly byte[] data = Encoding.ASCII.GetBytes("A quick brown fox jumps over the lazy dog");
+
+  private static readonly byte[][] result = {
+    new byte[] {0x01, 0x28, 0xd9, 0xd5, 0xaf, 0xbc, 0x27, 0xd4, 0x03, 0x46, 0x9f, 0xcc, 0x02, 0xaf, 0xa5, 0xb5, 0xb0, 0xcc, 0x34, 0xc0, 0x20, 0x0a, 0xd6, 0xe8, 0x1e, 0xd9, 0x4c, 0x8d, 0x52, 0x41, 0x97, 0x83 },
+    new byte[] {0xe0, 0x0e, 0x60, 0x56, 0x65, 0xaa, 0x03, 0x47, 0x19, 0x71, 0x10, 0xce, 0xb9, 0x85, 0x4a, 0x2d, 0x4b, 0x41, 0x27, 0x62, 0x07, 0xec, 0xaa, 0xfc, 0x67, 0xf6, 0x7c, 0xe5, 0x44, 0x32, 0x87, 0xa1 }
+  };
+
+  public static void Test()
+  {
+    Console.WriteLine("----- HMAC LSH256 Test -----");
+    for (int i = 0; i < key.Length; ++i)
+    {
+      Test(key[i], data, result[i]);
+    }
+    Console.WriteLine();
+  }
+
+  static void Test(byte[] key, byte[] msg, byte[] reference)
+  {
+    Mac mac = Mac.GetInstance(Hash.Algorithm.LSH256_256);
+    mac.Init(key);
+    byte[] hmac = mac.DoFinal(msg);
+
+    Console.WriteLine($"HMAC-LSH256-TEST : {Enumerable.SequenceEqual(hmac, reference)}");
+  }
+
+}
